@@ -1,0 +1,765 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+<meta name="googlebot" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Haas Elective Explorer</title>
+<style>
+:root{--bg:#faf9f7;--panel:#fff;--ink:#1b1a17;--muted:#6b6862;--line:#e4e1db;--accent:#2f5d50;
+--accent2:#b4653a;--warn:#a8442a;--bar:#a8bfb4;--barhi:#2f5d50;--pin:#8a6d3b}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Helvetica,Arial,sans-serif}
+.wrap{max-width:1240px;margin:0 auto;padding:26px 20px 140px}
+h1{font-size:26px;margin:0 0 4px;letter-spacing:-.02em}
+.sub{color:var(--muted);font-size:14px;margin-bottom:18px}
+.mlink{color:var(--accent);text-decoration:none;border-bottom:1px solid #cfdad4;white-space:nowrap}
+.mlink:hover{border-bottom-color:var(--accent)}
+.callout{background:#fff8ee;border:1px solid #eadfc8;border-left:3px solid var(--accent2);padding:14px 16px;border-radius:8px;margin:0 0 20px;font-size:14px;line-height:1.6}
+.callout b{color:var(--accent2)}
+h2.sec{font-size:15px;letter-spacing:.03em;text-transform:uppercase;color:var(--muted);margin:26px 0 10px;font-weight:650}
+.finds{display:grid;grid-template-columns:repeat(auto-fit,minmax(272px,1fr));gap:10px;margin-bottom:8px}
+.find{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 15px}
+.find .n{font-size:23px;font-weight:660;letter-spacing:-.02em;color:var(--accent);line-height:1.15}
+.find .t{font-weight:600;margin:6px 0 5px;font-size:13.5px}
+.find .d{font-size:12.5px;color:#55524c;line-height:1.55}
+.find.warn{border-color:#f0d9cf;background:#fdf6f3}.find.warn .n{color:var(--warn)}
+.controls{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:13px 15px;margin-bottom:14px;position:sticky;top:0;z-index:30}
+.row{display:flex;gap:9px;flex-wrap:wrap;align-items:center}
+.row+.row{margin-top:9px;padding-top:9px;border-top:1px dashed #eeece7}
+input[type=search],select{font:inherit;font-size:13.5px;padding:6px 9px;border:1px solid var(--line);border-radius:7px;background:#fff;color:var(--ink)}
+input[type=search]{flex:1;min-width:180px}
+select{max-width:210px}
+#day{max-width:150px}#fmt{max-width:190px}#inst{max-width:230px}
+.chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:5px 12px;font-size:13px;cursor:pointer;user-select:none}
+.chip:hover{border-color:var(--accent)}.chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.chip.tog.on{background:var(--accent2);border-color:var(--accent2)}
+.sl{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--muted);background:#fbfaf8;border:1px solid var(--line);border-radius:7px;padding:5px 10px}
+.sl input[type=range]{width:88px;accent-color:var(--accent)}
+.sl b{color:var(--ink);font-variant-numeric:tabular-nums;min-width:26px;display:inline-block;text-align:right}
+.btn{border:1px solid var(--line);background:#fff;border-radius:7px;padding:6px 11px;font-size:13px;cursor:pointer}
+.btn:hover{border-color:var(--accent)}
+.btn.act{background:var(--accent);color:#fff;border-color:var(--accent)}
+.count{color:var(--muted);font-size:13px;margin:0 0 9px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;margin-bottom:7px;overflow:hidden}
+.card.pinned{border-color:var(--pin);box-shadow:inset 3px 0 0 var(--pin)}
+.head{display:grid;grid-template-columns:30px 92px 1fr 200px 116px;gap:12px;padding:12px 15px;cursor:pointer;align-items:center}
+.head:hover{background:#fcfbf9}
+.pinb{border:1px solid var(--line);background:#fff;border-radius:6px;width:26px;height:26px;cursor:pointer;font-size:13px;line-height:1;color:var(--muted);padding:0}
+.pinb.on{background:var(--pin);color:#fff;border-color:var(--pin)}
+.cno{font-family:ui-monospace,Menlo,monospace;font-size:12.5px;color:var(--accent);font-weight:600}
+.ttl{font-weight:570;letter-spacing:-.01em}.ins{color:var(--muted);font-size:13px;margin-top:1px}
+.badges{display:flex;gap:5px;flex-wrap:wrap;margin-top:5px}
+.b{font-size:10.5px;padding:2px 7px;border-radius:4px;background:#f0efec;color:var(--muted)}
+.b.f26{background:#e3ede8;color:var(--accent)}.b.exp{background:#f3e9df;color:var(--accent2)}
+.b.dis{background:#fbe9e4;color:var(--warn);font-weight:560}.b.low{background:#f7efe4;color:#8a6d3b}.b.nh{background:#ece9f2;color:#5b4f72}
+.num .big.pr{color:#5b4f72}
+.scale{position:relative;height:26px}
+.scale .track{position:absolute;top:11px;left:0;right:0;height:3px;background:#e7e4dd;border-radius:2px}
+.scale .ci{position:absolute;top:8px;height:9px;background:var(--bar);border-radius:5px;opacity:.85}
+.scale .pt{position:absolute;top:5px;width:3px;height:15px;background:var(--barhi);border-radius:2px}
+.scale .lab{position:absolute;top:15px;font-size:9.5px;color:#b3aea4}
+.num{text-align:right}.num .big{font-size:19px;font-weight:640;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.num .small{font-size:11px;color:var(--muted)}
+.detail{display:none;padding:0 15px 17px;border-top:1px solid var(--line);background:#fcfbf9}
+.card.open .detail{display:block}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(205px,1fr));gap:12px;margin-top:13px}
+.f{background:#fff;border:1px solid var(--line);border-radius:8px;padding:10px 12px}
+.f .k{font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:4px}
+.f .v{font-size:13.5px;line-height:1.5}
+.flag{background:#fdf1ee;border:1px solid #f2d9d0;border-radius:8px;padding:10px 12px;margin-top:13px;font-size:13.5px;color:#7d3722}
+.quote.red{border-left-color:var(--accent2);background:#f8f5f0;padding:9px 12px;font-style:normal;border-radius:0 6px 6px 0}
+.cmts{margin-top:13px}
+.cmts summary{cursor:pointer;font-size:12.5px;font-weight:600;color:var(--accent);padding:8px 11px;background:#f4f7f5;border:1px solid #dde7e2;border-radius:8px;list-style:none;user-select:none}
+.cmts summary::-webkit-details-marker{display:none}
+.cmts summary:hover{background:#eaf1ed}
+.cmts[open] summary{border-radius:8px 8px 0 0}
+.cbox{border:1px solid #dde7e2;border-top:none;border-radius:0 0 8px 8px;padding:6px 12px 12px;background:#fff;max-height:460px;overflow:auto}
+.cfilter{width:100%;font:inherit;font-size:12.5px;padding:6px 9px;margin:8px 0 6px;border:1px solid var(--line);border-radius:6px}
+.c{font-size:13.5px;line-height:1.55;padding:9px 0;border-bottom:1px solid #f2f0ec;color:#3a3833}
+.c:last-child{border-bottom:none}
+.c .i{color:#b3aea4;font-size:10.5px;font-variant-numeric:tabular-nums;margin-right:7px}
+.c.red{background:#f7f5fa;border-left:3px solid #b3a8cc;padding-left:10px;color:#4a4160;font-size:13px}
+.cterm{font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:12px 0 2px;font-weight:600}
+.quote{border-left:3px solid var(--line);padding:2px 0 2px 12px;margin-top:13px;font-style:italic;color:#4a4741;font-size:13.5px}
+table.t{width:100%;border-collapse:collapse;margin-top:13px;font-size:13px}
+table.t th{text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:600;padding:5px 8px;border-bottom:1px solid var(--line)}
+table.t td{padding:6px 8px;border-bottom:1px solid #f0eeea;vertical-align:top}
+tr.trow.can{cursor:pointer}
+tr.trow.can:hover td{background:#f4f1ec}
+.chev{display:inline-block;width:13px;color:var(--accent);transition:transform .12s;font-size:10px}
+.chev.off{color:transparent}
+tr.trow.open .chev{transform:rotate(90deg)}
+tr.crow{display:none}
+tr.crow.on{display:table-row}
+tr.crow td{background:#f7f5f1;padding:0}
+.cwrap{padding:12px 14px 14px}
+.chd{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:650;margin-bottom:9px}
+.cfilter{width:100%;font:inherit;font-size:13px;padding:6px 9px;border:1px solid var(--line);border-radius:6px;margin-bottom:10px;background:#fff}
+.c{font-size:13.5px;line-height:1.6;padding:8px 0 8px 26px;border-bottom:1px solid #ece9e3;position:relative;color:#3d3b36}
+.c:last-child{border-bottom:none}
+.c .i{position:absolute;left:0;top:8px;font-size:10.5px;color:#b3aea4;font-variant-numeric:tabular-nums}
+.c.red{background:#f6f4fa;border-left:2px solid #b9aed6;padding-left:24px;margin-left:2px;color:#4a4160;font-style:italic}
+.mono{font-variant-numeric:tabular-nums}
+.tray{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);box-shadow:0 -3px 14px rgba(0,0,0,.06);padding:11px 20px;z-index:60;display:none}
+.tray.on{display:block}
+.tray .in{max-width:1240px;margin:0 auto;display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+.ptag{background:#f7f2e8;border:1px solid #e6d9bf;border-radius:999px;padding:4px 10px;font-size:12.5px}
+.ptag span{cursor:pointer;color:var(--muted);margin-left:6px}
+.modal{position:fixed;inset:0;background:rgba(27,26,23,.45);z-index:100;display:none;overflow:auto;padding:36px 20px}
+.modal.on{display:block}
+.mbox{max-width:1080px;margin:0 auto;background:#fff;border-radius:12px;padding:24px 26px}
+.mbox h3{margin:0 0 4px;font-size:19px}
+.verdict{background:#f4f7f5;border:1px solid #dde7e2;border-radius:8px;padding:12px 14px;margin:14px 0;font-size:13.5px;line-height:1.6}
+.method{margin-top:30px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:18px 20px;font-size:13.5px;line-height:1.65;color:#3d3b36}
+.method h3{margin:0 0 8px;font-size:15px}.method p{margin:0 0 10px}
+.empty{text-align:center;padding:46px;color:var(--muted)}
+@media(max-width:860px){.head{grid-template-columns:30px 1fr;gap:8px}.scale,.num{display:none}}
+
+#tab-data{
+ color-scheme:light;
+ --page:#f9f9f7; --surface-1:#fcfcfb; --text-primary:#0b0b0b; --text-secondary:#52514e;
+ --v-muted:#898781; --grid:#e1e0d9; --axis:#c3c2b7; --border:rgba(11,11,11,0.10);
+ --series-1:#2a78d6; --series-2:#eb6834;
+ --seq-250:#86b6ef; --seq-450:#2a78d6; --seq-600:#184f95;
+ --critical:#d03b3b; --v-good:#0ca30c; --success-text:#006300;
+}
+
+
+
+
+
+
+.lede{color:var(--text-secondary);font-size:15px;margin:0 0 6px}
+.src{color:var(--v-muted);font-size:13px;margin:0 0 30px}
+.fig{background:var(--surface-1);border:1px solid var(--border);border-radius:12px;padding:22px 24px;margin-bottom:20px}
+.kicker{font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--v-muted);font-weight:650;margin-bottom:7px}#tab-data h2{font-size:19px;letter-spacing:-.02em;margin:0 0 5px;font-weight:640}
+.fsub{color:var(--text-secondary);font-size:13.5px;margin:0 0 16px}
+.hero{font-size:44px;font-weight:640;letter-spacing:-.03em;line-height:1;margin:2px 0 4px;
+ font-variant-numeric:tabular-nums}
+.hero small{font-size:15px;font-weight:400;color:var(--text-secondary);letter-spacing:0}
+.take{font-size:14px;line-height:1.65;color:var(--text-secondary);margin-top:15px;
+ padding-top:14px;border-top:1px solid var(--grid)}
+.take b{color:var(--text-primary)}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12.5px;color:var(--text-secondary);margin:0 0 10px}
+.legend i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:6px;vertical-align:-1px}#tab-data svg{display:block;width:100%;height:auto;overflow:visible}
+.gl{stroke:var(--grid);stroke-width:1}
+.ax{stroke:var(--axis);stroke-width:1}
+.tk{fill:var(--v-muted);font-size:11px}
+.dl{fill:var(--text-primary);font-size:11.5px;font-weight:600;font-variant-numeric:tabular-nums}
+.hit{fill:transparent;cursor:pointer}
+.tt{position:fixed;pointer-events:none;background:var(--surface-1);border:1px solid var(--border);
+ border-radius:8px;padding:8px 11px;font-size:12.5px;box-shadow:0 4px 16px rgba(0,0,0,.13);
+ opacity:0;transition:opacity .1s;z-index:99;color:var(--text-primary);max-width:250px}
+.tt b{font-variant-numeric:tabular-nums}
+.tbtn{background:none;border:1px solid var(--border);border-radius:6px;color:var(--text-secondary);
+ font:inherit;font-size:12px;padding:3px 9px;cursor:pointer;margin-top:13px}
+.tbl{display:none;margin-top:12px;width:100%;border-collapse:collapse;font-size:12.5px}
+.tbl.on{display:table}
+.tbl th{text-align:left;color:var(--v-muted);font-weight:600;font-size:10.5px;letter-spacing:.05em;
+ text-transform:uppercase;padding:5px 8px;border-bottom:1px solid var(--grid)}
+.tbl td{padding:5px 8px;border-bottom:1px solid var(--grid);font-variant-numeric:tabular-nums}
+.note{background:var(--surface-1);border:1px solid var(--border);border-left:3px solid var(--series-2);
+ border-radius:10px;padding:16px 20px;margin-bottom:20px;font-size:14px;line-height:1.65;color:var(--text-secondary)}
+.note b{color:var(--text-primary)}
+
+#tab-data .dh1{font-size:27px;letter-spacing:-.025em;margin:6px 0 6px;font-weight:660;color:var(--ink)}
+#tab-data .dlede{color:#52514e;font-size:15px;line-height:1.6;margin:0 0 4px;max-width:74ch}
+#tab-data .dsec{font-size:20px;letter-spacing:-.02em;font-weight:640;margin:34px 0 4px;color:var(--ink);text-transform:none}
+#tab-data .finds{margin-top:14px}
+#tab-data #src{margin-bottom:22px}
+.shell{max-width:1240px;margin:0 auto;padding:26px 20px 0}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin:16px 0 0}
+.tab{appearance:none;background:none;border:none;border-bottom:2px solid transparent;font:inherit;
+ font-size:14.5px;font-weight:560;color:var(--muted);padding:9px 14px;cursor:pointer;margin-bottom:-1px}
+.tab:hover{color:var(--ink)} .tab.on{color:var(--accent);border-bottom-color:var(--accent)}
+.tab .n{font-size:11.5px;color:var(--muted);font-weight:400;margin-left:6px}
+section[hidden]{display:none}
+#tab-data{padding-top:6px} #tab-data .fig{margin-top:20px}
+#boot{max-width:1240px;margin:0 auto;padding:60px 20px;color:var(--muted);font-size:15px}
+#boot.err{color:#a8442a}
+</style></head><body>
+<div class="shell">
+ <h1>Haas Elective Explorer</h1>
+ <div class="sub" id="sub"></div>
+ <nav class="tabs" role="tablist">
+  <button class="tab on" id="tb-find" role="tab" aria-selected="true">Find your classes<span class="n" id="nfind"></span></button>
+  <button class="tab" id="tb-data" role="tab" aria-selected="false">What the data shows<span class="n">6 patterns</span></button>
+ </nav>
+</div>
+<div id="boot">Loading course data…</div>
+<div class="wrap" style="padding-top:16px;display:none" id="app">
+ <section id="tab-find" role="tabpanel">
+<div class="callout"><b>Read the bars, not the ranking.</b> Each bar is a 90% confidence interval (median width
+<b id="ciw"></b> pts); <b id="indist"></b> elective pairs are statistically tied with the top one. Pin two courses and hit
+Compare to see whether a gap is real. <a href="#method" class="mlink">Method &amp; caveats &rarr;</a></div>
+
+<div id="rednote"></div>
+
+
+<div class="controls">
+ <div class="row">
+  <input type="search" id="q" placeholder="Search course, title, instructor, or what students said…">
+  <select id="sort">
+   <option value="effAdj">Instructor effectiveness (adj)</option>
+   <option value="worth">Course worth (adj)</option>
+   <option value="effortAdj">Quality per unit of effort</option>
+   <option value="gap">Like the prof more than the course</option>
+   <option value="n">Sample size</option>
+   <option value="diff">Difficulty</option>
+   <option value="consistency">Consistency (SD across terms)</option>
+   <option value="priorPct">Instructor's whole-career percentile</option>
+   <option value="f26Units">Units</option>
+  </select>
+  <button class="btn" id="dir" title="Toggle sort direction">↓ high to low</button>
+  <button class="btn" id="reset">Reset</button>
+ </div>
+ <div class="row" id="areas"></div>
+ <div class="row">
+  <select id="fmt"><option value="">Any format</option></select>
+  <select id="day"><option value="">Any day</option></select>
+  <select id="inst"><option value="">Any instructor</option></select>
+ </div>
+ <div class="row">
+  <div class="sl">min comments <input type="range" id="nmin" min="0" max="100" value="0"><b id="nminv">0</b></div>
+  <div class="sl">difficulty <input type="range" id="dmin" min="0" max="7" step="0.5" value="0"><b id="dminv">0</b>
+   – <input type="range" id="dmax" min="0" max="7" step="0.5" value="7"><b id="dmaxv">7</b></div>
+  <div class="sl">units <input type="range" id="umin" min="0" max="4" step="1" value="0"><b id="uminv">0</b>
+   – <input type="range" id="umax" min="0" max="4" step="1" value="4"><b id="umaxv">4</b></div>
+ </div>
+ <div class="row" id="togs"></div>
+</div>
+<div class="count" id="count"></div>
+<div id="list"></div>
+
+<div class="method" id="method">
+<div id="redact"></div>
+<h3>Method, and what this cannot tell you</h3>
+<p><b>Sample size.</b> Every score is shrunk toward the population mean in proportion to how little evidence supports it — empirical Bayes (James–Stein), <span class="mono">adj = (n·x̄ + k·μ)/(n + k)</span>. A 7.00 from three students lands near average; a 6.85 from 99 barely moves.</p>
+<p><b>What n is.</b> The portal's detailed score reports carry true respondent counts and full rating distributions, but they are generated on demand and could not be retrieved without overloading the server. <i>n here is the number of written comments</i> — a lower bound on respondents, not the rating count. Sound as a relative weight, conservative as an absolute one. Response rates are unknown.</p>
+<p><b>Course worth is course-level</b> and repeats across co-instructors, so it is de-duplicated to one observation per course-term before averaging. Instructor effectiveness is instructor-level and is not.</p>
+<p><b>Consistency</b> is the SD across terms — computable for 101 of 220 pairs. <b>Trend</b> needs 3+ terms and exists for 14; treat it as a hint. <b>Quality per effort</b> is the residual after regressing adjusted effectiveness on difficulty and group-project load.</p>
+<p><b>Bid points are absent because they do not exist.</b> Haas states that "no record of previous bid point cutoffs is captured or shared from year to year."</p>
+<p><b>Instructor priors.</b> Separate from the course scores, each instructor is summarised across their entire record in the 2021–2026 evaluation file — 4,867 section-evaluations, 471 instructors, 16 terms, every program (MBA, EWMBA, UGBA, XMBA, MFE, PhD). Percentiles compare against all faculty with 3+ observations. This is what makes never-evaluated Fall 2026 courses assessable at all, and it is deliberately a <i>weak</i> prior: it says something about the teacher, nothing about the course.</p>
+<p><b>Coverage.</b> Spring 2025, Fall 2025, Spring 2026 for course-level scores and comments; 2021–2026 for instructor priors. MBA-prefixed courses. 158 of 371 sections are cross-listed with EWMBA or UGBA, so those comments are not purely from the FTMBA population.</p>
+</div>
+</section>
+ <section id="tab-data" role="tabpanel" hidden>
+  <h2 class="dh1">What 4,867 evaluations say</h2>
+  
+<p class="lede">Patterns in five years of Berkeley Haas course evaluations — the things you can only see by pooling every program, not just the courses you might take.</p>
+<p class="src" id="src"></p>
+
+<div class="note"><b>How to read these.</b> Every panel below pools all six programs (MBA, EWMBA, UGBA, XMBA, MFE, PhD) across 16 terms. These are <i>observational</i> patterns, not experiments: a difference between groups can reflect which courses ended up in each group rather than any causal effect. Where a result is statistically weak I say so on the panel rather than burying it.</div>
+
+<div id="figs"></div>
+
+  <h2 class="dsec">Nine more patterns, briefly</h2><p class="dlede">Smaller findings that did not need a chart of their own.</p><div class="finds" id="finds"></div>
+ </section>
+</div>
+
+
+<div class="tray" id="tray"><div class="in">
+ <b style="font-size:13.5px">Pinned</b><div id="ptags" style="display:flex;gap:7px;flex-wrap:wrap;flex:1"></div>
+ <button class="btn act" id="cmp">Compare</button><button class="btn" id="clr">Clear</button>
+</div></div>
+<div class="modal" id="modal"><div class="mbox">
+ <h3>Side by side</h3><div id="mbody"></div>
+ <button class="btn" id="close" style="margin-top:16px">Close</button>
+</div></div>
+
+
+<div class="tt" id="tt"></div>
+
+<script>
+window.__initExplorer = function(DATA){
+const AREAS=["AI","Ops & Analytics","Energy, Climate & Infrastructure","Tech Commercialization","Entrepreneurship"];
+const FINDS=[
+ {n:"0.07",t:"Correlation between difficulty and rating",d:"Hard courses are not rated worse. The correlation between difficulty and instructor effectiveness is essentially zero — and difficulty vs course <i>worth</i> is <b>+0.22</b>, meaning students rate demanding courses as slightly more worthwhile. Choosing an easy course to protect your ratings-based shortlist is optimising for nothing."},
+ {n:"1.94",t:"Point spread between instructors of one course",d:"MBA296 Extreme Leadership ranges 4.61 to 6.55 depending on who teaches it. That gap is <b>larger than the entire p10–p90 range of every elective</b> (0.79). Who teaches it matters more than which course it is — always filter by instructor, never by course number."},
+ {n:"4.12",t:"Course worth of MBA296 Business AI Foundations",cls:"warn",d:"Across six instructors, students rate the instructors 4.6–6.1 but the <i>course</i> at 4.12 out of 7 — the lowest in the dataset by a wide margin. The teaching is not the problem; the course is. Students report it is required for the AI Certificate."},
+ {n:DATA.meta.indistinguishable+" / "+DATA.meta.nElectives,t:"Elective pairs statistically tied with the top",d:"Median 90% CI is "+DATA.meta.medianCI+" points on a 7-point scale. Where two intervals overlap the ordering between them is not meaningful \u2014 use the numbers to rule courses <i>out</i>, and the comments to choose between what is left. This tightened sharply once the per-student SD was <i>measured</i> (0.828) rather than assumed (1.35)."},
+ {n:"1.10",t:"Biggest gap where the course beats the teaching",d:"MBA291L Leader as Coach under Rittenberg: effectiveness 5.21, worth 6.31. Students got real value despite the instruction. The reverse pattern — liking the professor more than the course — is far more common and is the one that wastes bid points."},
+ {n:"1.14",t:"Volatility of the least predictable course",d:"MBA292T Reinventing Capitalism swings with an SD of 1.14 across three terms. Bidding on it is closer to a coin flip than a choice. Sort by consistency to find the courses that reliably are what they were."},
+ {n:"0.16",t:"Correlation between popularity and quality",d:"Sample size barely predicts rating. The courses everyone talks about are not systematically the good ones, which is exactly why the shrinkage adjustment matters."},
+ {n:"20 / 23",t:"Blind Fall 2026 courses now have an instructor prior",d:"Twenty-three Fall 2026 offerings have never been evaluated. But their instructors mostly have long records in <i>other</i> courses and other programs. Pulling 16 terms and 4,867 section-evaluations across MBA, EWMBA, UGBA, XMBA, MFE and PhD gives 20 of them a real prior — turn on <b>Include Fall 2026 courses with no history</b> to see them."},
+ {n:"98%",t:"Rows carrying a whole-career instructor record",d:"Every instructor is now scored against all 471 Haas faculty in the 2021–2026 file, not just their MBA electives. Sort by <b>instructor percentile</b> to separate a teacher who is reliably strong everywhere from one who happened to have a good term."}
+];
+let sel=new Set(), pins=[], asc=false;
+let togs={elec:true,f26:false,hilo:false,dis:false,nohist:false};
+const $=s=>document.querySelector(s);
+let CID=0;
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
+
+$('#sub').textContent=DATA.meta.nSections+" sections · "+DATA.meta.nPairs+" course-instructor pairs · "+
+ DATA.meta.nComments.toLocaleString()+" student comments · "+DATA.meta.terms.join(", ");
+$('#ciw').textContent=DATA.meta.medianCI;
+$('#indist').textContent=DATA.meta.indistinguishable+" of "+DATA.meta.nElectives;
+if(DATA.meta.redactionPolicy) $('#redact').innerHTML=
+ '<div class="callout" style="background:#f8f6fb;border-color:#e3dff0;border-left-color:#8a7fae">'+
+ '<b style="color:#5b4f72">A note on '+DATA.meta.redactionsUnique+' redacted comments.</b> '+esc(DATA.meta.redactionPolicy)+'</div>';
+$('#finds').innerHTML=FINDS.map(f=>`<div class="find ${f.cls||''}"><div class="n">${f.n}</div><div class="t">${f.t}</div><div class="d">${f.d}</div></div>`).join('');
+$('#areas').innerHTML=AREAS.map(a=>`<div class="chip" data-a="${a}">${a}</div>`).join('');
+$('#togs').innerHTML=`<div class="chip tog on" data-t="elec">Electives only</div>
+ <div class="chip tog" data-t="f26">Offered Fall 2026</div>
+ <div class="chip tog" data-t="hilo">Hide thin evidence (&lt;15)</div>
+ <div class="chip tog" data-t="dis">Numbers vs comments disagree</div>
+ <div class="chip tog" data-t="nohist">Include Fall 2026 courses with no history</div>`;
+
+const uniq=(k)=>[...new Set(DATA.rows.flatMap(r=>{
+  const v=r[k]; if(!v) return [];
+  return String(v).split(';').map(s=>s.trim()).filter(Boolean);
+}))].sort();
+$('#fmt').innerHTML+=uniq('f26Format').map(v=>`<option>${esc(v)}</option>`).join('');
+$('#day').innerHTML+=uniq('f26Day').map(v=>`<option>${esc(v)}</option>`).join('');
+$('#inst').innerHTML+=[...new Set(DATA.rows.map(r=>r.instructor))].sort().map(v=>`<option>${esc(v)}</option>`).join('');
+
+document.querySelectorAll('[data-a]').forEach(c=>c.onclick=()=>{const a=c.dataset.a;sel.has(a)?sel.delete(a):sel.add(a);c.classList.toggle('on');render();});
+document.querySelectorAll('[data-t]').forEach(c=>c.onclick=()=>{togs[c.dataset.t]=!togs[c.dataset.t];c.classList.toggle('on');render();});
+['q','sort','fmt','day','inst'].forEach(id=>{const el=$('#'+id);el.oninput=render;el.onchange=render;});
+['nmin','dmin','dmax','umin','umax'].forEach(id=>$('#'+id).oninput=()=>{
+  $('#'+id+'v').textContent=$('#'+id).value; render();});
+$('#dir').onclick=()=>{asc=!asc;$('#dir').textContent=asc?'↑ low to high':'↓ high to low';render();};
+$('#reset').onclick=()=>{sel.clear();document.querySelectorAll('[data-a]').forEach(c=>c.classList.remove('on'));
+  togs={elec:true,f26:false,hilo:false,dis:false,nohist:false};
+  document.querySelectorAll('[data-t]').forEach(c=>c.classList.toggle('on',togs[c.dataset.t]));
+  $('#q').value='';['fmt','day','inst'].forEach(i=>$('#'+i).value='');
+  [['nmin',0],['dmin',0],['dmax',7],['umin',0],['umax',4]].forEach(([i,v])=>{$('#'+i).value=v;$('#'+i+'v').textContent=v;});
+  asc=false;$('#dir').textContent='↓ high to low';render();};
+
+const LO=4.4,HI=7.0,pos=v=>Math.max(0,Math.min(100,(v-LO)/(HI-LO)*100));
+function bar(r){ if(r.effAdj==null) return '';
+ return `<div class="scale"><div class="track"></div>
+  <div class="ci" style="left:${pos(r.lo)}%;width:${Math.max(pos(r.hi)-pos(r.lo),1.5)}%"></div>
+  <div class="pt" style="left:${pos(r.effAdj)}%"></div>
+  <div class="lab" style="left:0">4.4</div><div class="lab" style="right:0">7</div></div>`;}
+
+function detail(r){
+ const rows=r.sections.map((s,si)=>{
+  const cs=s.comments||[], tid='ct'+(CID++), has=cs.length>0;
+  const body=has?cs.map((c,i)=>`<div class="c${c.indexOf('[REDACTED')===0?' red':''}"><span class="i">${i+1}</span>${esc(c)}</div>`).join(''):'';
+  return `<tr class="trow${has?' can':''}" ${has?`data-tid="${tid}"`:''}>
+   <td class="mono">${has?'<span class="chev">&#9656;</span>':'<span class="chev off"></span>'}${esc(s.term)}</td>
+   <td class="mono">${esc(s.courseNo)}</td>
+   <td class="mono">${s.n==null?'—':s.n}</td><td class="mono">${s.eff==null?'—':s.eff.toFixed(2)}</td>
+   <td class="mono">${s.worth==null?'—':s.worth.toFixed(2)}</td><td class="mono">${s.diff==null?'—':s.diff.toFixed(2)}</td>
+   <td>${esc(s.sentiment)}${s.consensus==='split'?' <b>· split</b>':''}${s.teamTaught?' · team-taught':''}${s.crossListed?' · with '+esc(s.crossListed):''}</td></tr>
+   ${has?`<tr class="crow" id="${tid}"><td colspan="7"><div class="cwrap">
+     <div class="chd">${esc(s.term)} · ${esc(s.courseNo)} · ${esc(s.instructorLabel||r.instructor)} — all ${cs.length} student comment${cs.length>1?'s':''}</div>
+     <input class="cfilter" type="search" placeholder="Filter this term's comments…"
+       oninput="(function(el){const q=el.value.toLowerCase();el.parentElement.querySelectorAll('.c').forEach(d=>{d.style.display=(!q||d.textContent.toLowerCase().indexOf(q)>=0)?'':'none';});})(this)">
+     ${body}</div></td></tr>`:''}`;}).join('');
+ const last=r.sections[r.sections.length-1]||{}, flags=r.sections.map(s=>s.redFlags).filter(Boolean);
+ if(r.noHistory) return `<div class="detail">
+  ${(r.prior&&r.prior.eff!=null)?`<div class="f" style="margin-top:14px;background:#faf9fc;border-color:#e3dff0">
+    <div class="k">This instructor's whole record — every course, every program, 2021–2026</div>
+    <div class="v"><b>${r.prior.eff.toFixed(2)}</b> mean effectiveness across <b>${r.prior.obs}</b> section-observations,
+    ${r.prior.nCourses} distinct courses, ${r.prior.terms} terms (${esc(r.prior.firstTerm)} – ${esc(r.prior.lastTerm)}),
+    programs ${esc(r.prior.programs)}. That is the <b>${r.prior.pctile}th percentile</b> of Haas faculty.
+    ${r.prior.effSD!=null?`Section-to-section SD ${r.prior.effSD.toFixed(2)}${r.prior.effSD>0.9?' — <b>highly variable</b>, this instructor is not the same experience every time':''}.`:''}
+    ${r.prior.trend!=null?` Career trend ${r.prior.trend>0?'+':''}${r.prior.trend.toFixed(3)}/term.`:''}
+    Course worth ${r.prior.worth.toFixed(2)}, difficulty ${r.prior.diff.toFixed(2)}.</div></div>`
+   :'<div class="f" style="margin-top:14px"><div class="v">No record for this instructor anywhere in the 2021–2026 file.</div></div>'}
+  <div class="flag" style="background:#f6f4fa;border-color:#e3dff0;color:#4a4160">
+    <b>This course has never been evaluated</b> — new or renamed for Fall 2026. Everything above describes the
+    instructor on <i>other</i> courses. Real signal, but weak: a strong teacher can still launch a rough first
+    offering, and MBA296 Business AI Foundations is the cautionary example. Email the instructor for a syllabus.</div>
+  <div class="f" style="margin-top:13px"><div class="k">Fall 2026</div><div class="v">${esc(r.f26Sections)} ·
+   ${r.f26Units?r.f26Units+' units · ':''}${esc(r.f26Format)}${r.f26Day?' · '+esc(r.f26Day)+' '+esc(r.f26Time):''}</div></div></div>`;
+ return `<div class="detail"><div class="grid">
+  <div class="f"><div class="k">Who it's for</div><div class="v">${esc(last.goodFor)||'—'}</div></div>
+  <div class="f"><div class="k">Who it isn't for</div><div class="v">${esc(last.notFor)||'—'}</div></div>
+  <div class="f"><div class="k">Workload</div><div class="v">${esc(last.workloadNote)||'—'}</div></div>
+  <div class="f"><div class="k">Grading</div><div class="v">${esc(last.gradingBasis)||'—'}</div></div>
+  <div class="f"><div class="k">Where the value is</div><div class="v">${esc(r.valueSource)||'—'}${r.valueSource==='professor'?' — carried by this instructor; a different one is a different course.':''}</div></div>
+  <div class="f"><div class="k">Consistency / trend</div><div class="v">${r.consistency==null?'one term only — not measurable':'SD '+r.consistency.toFixed(2)+' across '+r.nTerms+' terms'}${r.trend!=null?'<br>trend '+(r.trend>0?'+':'')+r.trend.toFixed(3)+'/term':''}</div></div></div>
+  ${(r.prior&&r.prior.eff!=null)?`<div class="f" style="margin-top:13px;background:#faf9fc;border-color:#e3dff0">
+    <div class="k">This instructor's whole record — every course, every program, 2021–2026</div>
+    <div class="v"><b>${r.prior.eff.toFixed(2)}</b> mean effectiveness across <b>${r.prior.obs}</b> section-observations,
+    ${r.prior.nCourses} distinct courses, ${r.prior.terms} terms (${esc(r.prior.firstTerm)} – ${esc(r.prior.lastTerm)}),
+    programs ${esc(r.prior.programs)}. That is the <b>${r.prior.pctile}th percentile</b> of Haas faculty.
+    ${r.prior.effSD!=null?`Section-to-section SD ${r.prior.effSD.toFixed(2)}${r.prior.effSD>0.9?' — <b>highly variable</b>, this instructor is not the same experience every time':''}.`:''}
+    ${r.prior.trend!=null?` Career trend ${r.prior.trend>0?'+':''}${r.prior.trend.toFixed(3)}/term.`:''}
+    Course worth ${r.prior.worth.toFixed(2)}, difficulty ${r.prior.diff.toFixed(2)}.</div></div>`:''}
+  ${r.noHistory?`<div class="flag" style="background:#f6f4fa;border-color:#e3dff0;color:#4a4160">
+    <b>This course has never been evaluated</b> — it is new or renamed for Fall 2026. Everything above is the
+    instructor's record on <i>other</i> courses. It is a real signal but a weak one: a strong teacher can still
+    launch a rough first offering, and MBA296 Business AI Foundations is the cautionary example. Email the
+    instructor for a syllabus.</div>`:''}
+  ${flags.length?`<div class="flag"><b>Recurring complaints:</b> ${esc(flags.join(' · '))}</div>`:''}
+  ${last.quote?(last.quote.indexOf('[REDACTED')===0
+   ? `<div class="quote red">${esc(last.quote)}</div>`
+   : `<div class="quote">“${esc(last.quote)}”</div>`):''}
+  ${(()=>{const tot=r.sections.reduce((a,s)=>a+((s.comments||[]).length),0);
+    if(!tot) return '';
+    const blocks=r.sections.filter(s=>(s.comments||[]).length).map(s=>
+      `<div class="cterm">${esc(s.term)} · ${esc(s.courseNo)} · ${s.comments.length} comments</div>`+
+      s.comments.map((c,i)=>`<div class="c${c.indexOf('[REDACTED')===0?' red':''}"><span class="i">${i+1}</span>${esc(c)}</div>`).join('')
+    ).join('');
+    return `<details class="cmts"><summary>&#9656; Read all ${tot} student comments for this course-instructor pair</summary>
+      <div class="cbox"><input class="cfilter" type="search" placeholder="Filter these comments — try workload, exam, group, recommend…"
+        oninput="(function(el){const box=el.parentElement;const q=el.value.toLowerCase();
+          box.querySelectorAll('.c').forEach(d=>{d.style.display=(!q||d.textContent.toLowerCase().indexOf(q)>=0)?'':'none';});
+          box.querySelectorAll('.cterm').forEach(h=>{let n=h.nextElementSibling,any=false;
+            while(n&&n.className.indexOf('c')===0){if(n.style.display!=='none')any=true;n=n.nextElementSibling;}
+            h.style.display=any?'':'none';});})(this)">${blocks}</div></details>`;})()}
+  <table class="t"><thead><tr><th>Term</th><th>Section</th><th>Comments</th><th>Effect.</th><th>Worth</th><th>Diff.</th><th>Read</th></tr></thead><tbody>${rows}</tbody></table>
+  ${r.f26?`<div class="f" style="margin-top:13px"><div class="k">Fall 2026</div><div class="v">${esc(r.f26Sections)} · ${r.f26Units?r.f26Units+' units · ':''}${esc(r.f26Format)}${r.f26Day?' · '+esc(r.f26Day)+' '+esc(r.f26Time):''}${r.f26Exp?' · Experiential':''}${r.f26Tech?' · Bus &amp; Tech':''}</div></div>`:''}</div>`;}
+
+const has=(v,x)=>!x||String(v||'').split(';').map(s=>s.trim()).includes(x);
+let shown=[];
+function render(){
+ const q=$('#q').value.toLowerCase().trim(), key=$('#sort').value;
+ const nmin=+$('#nmin').value, dmin=+$('#dmin').value, dmax=+$('#dmax').value, umin=+$('#umin').value, umax=+$('#umax').value;
+ const fmt=$('#fmt').value, day=$('#day').value, inst=$('#inst').value;
+ shown=DATA.rows.filter(r=>{
+  if(r.noHistory&&!togs.nohist)return false;
+  if(togs.elec&&r.type!=='Elective')return false;
+  if(togs.f26&&!r.f26)return false;
+  if(togs.hilo&&r.n<15)return false;
+  if(togs.dis&&r.noHistory)return false;
+  if(togs.dis&&!r.disagree)return false;
+  if(sel.size&&!r.areas.some(a=>sel.has(a)))return false;
+  if(r.n<nmin)return false;
+  if(r.diff!=null&&(r.diff<dmin||r.diff>dmax))return false;
+  if((umin>0||umax<4)&&(r.f26Units==null||r.f26Units<umin||r.f26Units>umax))return false;
+  if(fmt&&!has(r.f26Format,fmt))return false;
+  if(day&&!has(r.f26Day,day))return false;
+  if(inst&&r.instructor!==inst)return false;
+  if(q){const hay=(r.course+' '+r.title+' '+r.instructor+' '+r.sections.map(s=>s.goodFor+' '+s.notFor+' '+s.redFlags+' '+s.workloadNote+' '+(s.comments||[]).join(' ')).join(' ')).toLowerCase();
+   if(!hay.includes(q))return false;}
+  return true;});
+ shown.sort((a,b)=>{
+  let x=(key==='priorPct'?((a.prior||{}).pctile??null):a[key]), y=(key==='priorPct'?((b.prior||{}).pctile??null):b[key]);
+  if(x==null)return 1; if(y==null)return -1;
+  return asc?(x-y):(y-x);});
+ $('#count').textContent=shown.length+' shown'+(pins.length?` · ${pins.length} pinned`:'');
+ $('#list').innerHTML=shown.length?shown.map(r=>{
+  const id=r.course+'|'+r.instructor, p=pins.includes(id);
+  return `<div class="card ${p?'pinned':''}" data-id="${esc(id)}">
+   <div class="head"><button class="pinb ${p?'on':''}" data-pin="${esc(id)}" title="Pin to compare">${p?'✓':'+'}</button>
+    <div><div class="cno">${esc(r.course)}</div></div>
+    <div><div class="ttl">${esc(r.title)}</div><div class="ins">${esc(r.instructor)}</div><div class="badges">
+     ${r.f26?'<span class="b f26">Fall 2026</span>':''}${r.f26Units?`<span class="b">${r.f26Units}u</span>`:''}
+     ${r.f26Exp?'<span class="b exp">Experiential</span>':''}${r.f26Tech?'<span class="b exp">Bus &amp; Tech</span>':''}
+     ${r.valueSource==='professor'?'<span class="b">prof-carried</span>':''}${r.n<15?'<span class="b low">thin evidence</span>':''}
+     ${r.noHistory?'<span class="b nh">no course history — instructor prior only</span>':''}
+     ${r.disagree?`<span class="b dis">${esc(r.disagree)}</span>`:''}</div></div>
+    <div>${bar(r)}</div>
+    <div class="num">${r.noHistory
+      ? ((r.prior&&r.prior.eff!=null)?`<div class="big pr">${r.prior.eff.toFixed(2)}</div>
+          <div class="small">instructor avg · ${r.prior.obs} obs</div>
+          <div class="small">${r.prior.pctile}th pctile of faculty</div>`
+        :'<div class="big">—</div><div class="small">no data at all</div>')
+      : `<div class="big">${r.effAdj==null?'—':r.effAdj.toFixed(2)}</div>
+         <div class="small">${r.n} comments · ${r.nTerms}t</div>
+         <div class="small">worth ${r.worth==null?'—':r.worth.toFixed(2)} · diff ${r.diff==null?'—':r.diff.toFixed(1)}</div>`}</div>
+   </div>${detail(r)}</div>`;}).join('')
+  :'<div class="empty">Nothing matches those filters.</div>';
+ document.querySelectorAll('.head').forEach(h=>h.onclick=e=>{if(e.target.dataset.pin!==undefined)return;h.parentElement.classList.toggle('open');});
+ document.querySelectorAll('tr.trow.can').forEach(tr=>tr.onclick=e=>{
+   e.stopPropagation();
+   const row=document.getElementById(tr.dataset.tid);
+   if(!row) return;
+   row.classList.toggle('on'); tr.classList.toggle('open');});
+ document.querySelectorAll('[data-pin]').forEach(b=>b.onclick=e=>{e.stopPropagation();
+  const id=b.dataset.pin; const i=pins.indexOf(id);
+  if(i>=0)pins.splice(i,1); else if(pins.length<6)pins.push(id);
+  render(); tray();});
+ tray();
+}
+function find(id){return DATA.rows.find(r=>r.course+'|'+r.instructor===id);}
+function tray(){
+ $('#tray').classList.toggle('on',pins.length>0);
+ $('#ptags').innerHTML=pins.map(id=>{const r=find(id);
+  return `<span class="ptag">${esc(r.course)} · ${esc(r.instructor.split(',')[0])}<span data-un="${esc(id)}">✕</span></span>`;}).join('');
+ document.querySelectorAll('[data-un]').forEach(x=>x.onclick=()=>{pins=pins.filter(p=>p!==x.dataset.un);render();});
+}
+$('#clr').onclick=()=>{pins=[];render();};
+$('#close').onclick=()=>$('#modal').classList.remove('on');
+$('#modal').onclick=e=>{if(e.target.id==='modal')$('#modal').classList.remove('on');};
+$('#cmp').onclick=()=>{
+ const rs=pins.map(find);
+ if(rs.length<2){$('#mbody').innerHTML='<p>Pin at least two courses to compare.</p>';$('#modal').classList.add('on');return;}
+ const best=rs.reduce((a,b)=>(a.effAdj>=b.effAdj?a:b));
+ const ties=rs.filter(r=>r!==best&&r.hi>=best.lo);
+ const rows=(label,fn)=>`<tr><th style="white-space:nowrap">${label}</th>${rs.map(r=>`<td>${fn(r)}</td>`).join('')}</tr>`;
+ $('#mbody').innerHTML=`
+  <div class="verdict"><b>Verdict.</b> ${esc(best.course)} (${esc(best.instructor)}) has the highest point estimate at
+  ${best.effAdj.toFixed(2)}. ${ties.length
+   ? `But its 90% interval overlaps with <b>${ties.map(t=>esc(t.course)+' ('+esc(t.instructor.split(',')[0])+')').join(', ')}</b> — on this evidence those are <b>ties, not rankings</b>. Choose on workload, units, schedule and topic instead.`
+   : `Its interval clears every other pinned course, so this difference is real on the available evidence.`}</div>
+  <table class="t"><thead><tr><th></th>${rs.map(r=>`<th>${esc(r.course)}<br><span style="font-weight:400;text-transform:none;letter-spacing:0">${esc(r.instructor)}</span></th>`).join('')}</tr></thead><tbody>
+  ${rows('Title',r=>esc(r.title))}
+  ${rows('Effectiveness (adj)',r=>`<b class="mono">${r.effAdj.toFixed(2)}</b>`)}
+  ${rows('90% interval',r=>`<span class="mono">${r.lo.toFixed(2)} – ${r.hi.toFixed(2)}</span>`)}
+  ${rows('Course worth',r=>`<span class="mono">${r.worth==null?'—':r.worth.toFixed(2)}</span>`)}
+  ${rows('Difficulty',r=>`<span class="mono">${r.diff==null?'—':r.diff.toFixed(2)}</span>`)}
+  ${rows('Comments (n)',r=>`<span class="mono">${r.n}</span>`)}
+  ${rows('Consistency SD',r=>r.consistency==null?'one term':`<span class="mono">${r.consistency.toFixed(2)}</span>`)}
+  ${rows('Quality per effort',r=>`<span class="mono">${r.effortAdj==null?'—':r.effortAdj.toFixed(2)}</span>`)}
+  ${rows('Fall 2026',r=>r.f26?`${esc(r.f26Sections)}<br>${r.f26Units||'?'}u · ${esc(r.f26Format)}<br>${esc(r.f26Day)} ${esc(r.f26Time)}`:'not offered')}
+  ${rows('Where value is',r=>esc(r.valueSource))}
+  ${rows("Who it's for",r=>esc((r.sections[r.sections.length-1]||{}).goodFor))}
+  ${rows("Who it isn't",r=>esc((r.sections[r.sections.length-1]||{}).notFor))}
+  ${rows('Recurring complaints',r=>esc(r.sections.map(s=>s.redFlags).filter(Boolean).join(' · '))||'—')}
+  </tbody></table>`;
+ $('#modal').classList.add('on');};
+render();
+
+};
+window.__buildInsights = function(){
+const D = window.__INSIGHTS;
+const $=s=>document.querySelector(s), TT=$('#tt');
+const esc=s=>String(s).replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]));
+$('#src').textContent=`${D.meta.rows.toLocaleString()} section-evaluations · ${D.meta.instructors} instructors · ${D.meta.courses} courses · ${D.meta.terms} terms · ${D.meta.span}`;
+
+function tip(el,html){
+  el.addEventListener('mousemove',e=>{TT.innerHTML=html;TT.style.opacity=1;
+    const r=TT.getBoundingClientRect();
+    TT.style.left=Math.min(e.clientX+14,innerWidth-r.width-10)+'px';
+    TT.style.top=Math.max(e.clientY-r.height-12,8)+'px';});
+  el.addEventListener('mouseleave',()=>TT.style.opacity=0);
+}
+function fig({kicker,title,sub,hero,heroNote,legend,svg,take,table}){
+  const id='t'+Math.random().toString(36).slice(2,8);
+  return `<div class="fig"><div class="kicker">${kicker}</div><h2>${title}</h2>
+   <p class="fsub">${sub}</p>
+   ${hero?`<div class="hero">${hero}${heroNote?` <small>${heroNote}</small>`:''}</div>`:''}
+   ${legend?`<div class="legend">${legend}</div>`:''}
+   ${svg}
+   <div class="take">${take}</div>
+   ${table?`<button class="tbtn" data-t="${id}">Show the numbers</button>
+     <table class="tbl" id="${id}">${table}</table>`:''}</div>`;
+}
+const W=880, PAD={l:52,r:26,t:16,b:34};
+
+/* ---------- 1. drift ---------- */
+(function(){
+ const H=230, d=D.drift, n=d.terms.length;
+ const lo=5.75, hi=6.35;
+ const RP=96;
+ const x=i=>PAD.l+i*(W-PAD.l-RP)/(n-1);
+ const y=v=>PAD.t+(hi-v)/(hi-lo)*(H-PAD.t-PAD.b);
+ const path=a=>a.map((v,i)=>`${i?'L':'M'}${x(i).toFixed(1)},${y(v).toFixed(1)}`).join('');
+ let g='';
+ for(let v=5.8;v<=6.3;v+=0.1) g+=`<line class="gl" x1="${PAD.l}" x2="${W-RP}" y1="${y(v)}" y2="${y(v)}"/><text class="tk" x="${PAD.l-8}" y="${y(v)+4}" text-anchor="end">${v.toFixed(1)}</text>`;
+ let ticks='', hits='';
+ d.terms.forEach((t,i)=>{ if(i%3===0||i===n-1) ticks+=`<text class="tk" x="${x(i)}" y="${H-PAD.b+16}" text-anchor="middle">${t.replace(' ',' ')}</text>`;
+  hits+=`<rect class="hit" data-i="${i}" x="${x(i)-12}" y="${PAD.t}" width="24" height="${H-PAD.t-PAD.b}"/>`;});
+ const svg=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Mean instructor effectiveness and course worth by term, 2021 to 2026">
+  ${g}<line class="ax" x1="${PAD.l}" x2="${W-RP}" y1="${H-PAD.b}" y2="${H-PAD.b}"/>${ticks}
+  <path d="${path(d.eff)}" fill="none" stroke="var(--series-1)" stroke-width="2" stroke-linejoin="round"/>
+  <path d="${path(d.worth)}" fill="none" stroke="var(--series-2)" stroke-width="2" stroke-linejoin="round"/>
+  ${d.eff.map((v,i)=>`<circle cx="${x(i)}" cy="${y(v)}" r="4" fill="var(--series-1)" stroke="var(--surface-1)" stroke-width="2"/>`).join('')}
+  ${d.worth.map((v,i)=>`<circle cx="${x(i)}" cy="${y(v)}" r="4" fill="var(--series-2)" stroke="var(--surface-1)" stroke-width="2"/>`).join('')}
+  <text class="dl" x="${x(n-1)+8}" y="${y(d.eff[n-1])+4}" fill="var(--series-1)">Instructor</text>
+  <text class="dl" x="${x(n-1)+8}" y="${y(d.worth[n-1])+4}" fill="var(--series-2)">Worth</text>
+  ${hits}</svg>`;
+ document.getElementById('figs').insertAdjacentHTML('beforeend', fig({
+  kicker:'Rating drift', title:'Instructors are rated better every year. Courses are not.',
+  sub:'Mean of every section evaluation in each term, both on the same 7-point scale.',
+  hero:'+0.16', heroNote:'instructor effectiveness over five years, against +0.02 for course worth',
+  legend:`<span><i style="background:var(--series-1)"></i>Instructor effectiveness</span><span><i style="background:var(--series-2)"></i>Course worth</span>`,
+  svg,
+  take:`Instructor effectiveness climbs steadily — <b>+${(D.drift.effSlope*15).toFixed(2)} points across the window</b> — while course worth is flat at +${(D.drift.worthSlope*15).toFixed(2)}. Students are rating the <i>person</i> more generously over time without finding the <i>courses</i> more worthwhile. That is the signature of evaluation inflation on the personal dimension, and it means an instructor's 6.3 in 2021 is a better score than a 6.3 in 2026. It also argues for comparing instructors within a term rather than across years.`,
+  table:`<thead><tr><th>Term</th><th>Effectiveness</th><th>Worth</th><th>n</th></tr></thead><tbody>${
+   d.terms.map((t,i)=>`<tr><td>${t}</td><td>${d.eff[i].toFixed(3)}</td><td>${d.worth[i].toFixed(3)}</td><td>${d.n[i]}</td></tr>`).join('')}</tbody>`}));
+ document.querySelectorAll('[data-i]').forEach(r=>{const i=+r.dataset.i;
+  tip(r,`<b>${d.terms[i]}</b><br>Instructor ${d.eff[i].toFixed(2)}<br>Worth ${d.worth[i].toFixed(2)}<br><span style="color:var(--v-muted)">${d.n[i]} evaluations</span>`);});
+})();
+
+/* ---------- 2. debut vs later ---------- */
+(function(){
+ const d=D.debut, H=250, n=d.pcts.length;
+ const lo=4.0, hi=7.0;
+ const x=i=>PAD.l+i*(W-PAD.l-PAD.r)/(n-1);
+ const y=v=>PAD.t+(hi-v)/(hi-lo)*(H-PAD.t-PAD.b);
+ let g='';
+ for(let v=4;v<=7;v+=0.5) g+=`<line class="gl" x1="${PAD.l}" x2="${W-PAD.r}" y1="${y(v)}" y2="${y(v)}"/><text class="tk" x="${PAD.l-8}" y="${y(v)+4}" text-anchor="end">${v.toFixed(1)}</text>`;
+ const path=a=>a.map((v,i)=>`${i?'L':'M'}${x(i).toFixed(1)},${y(v).toFixed(1)}`).join('');
+ let ticks='',hits='';
+ d.pcts.forEach((p,i)=>{ticks+=`<text class="tk" x="${x(i)}" y="${H-PAD.b+16}" text-anchor="middle">${p}th</text>`;
+  hits+=`<rect class="hit" data-p="${i}" x="${x(i)-22}" y="${PAD.t}" width="44" height="${H-PAD.t-PAD.b}"/>`;});
+ const svg=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Percentiles of instructor effectiveness, debut offerings versus later offerings">
+  ${g}<line class="ax" x1="${PAD.l}" x2="${W-PAD.r}" y1="${H-PAD.b}" y2="${H-PAD.b}"/>${ticks}
+  <text class="tk" x="${PAD.l}" y="${H-6}">percentile of the distribution &rarr;</text>
+  <path d="${path(d.debut)}" fill="none" stroke="var(--series-2)" stroke-width="2"/>
+  <path d="${path(d.later)}" fill="none" stroke="var(--series-1)" stroke-width="2"/>
+  ${d.debut.map((v,i)=>`<circle cx="${x(i)}" cy="${y(v)}" r="4.5" fill="var(--series-2)" stroke="var(--surface-1)" stroke-width="2"/>`).join('')}
+  ${d.later.map((v,i)=>`<circle cx="${x(i)}" cy="${y(v)}" r="4.5" fill="var(--series-1)" stroke="var(--surface-1)" stroke-width="2"/>`).join('')}
+  ${hits}</svg>`;
+ document.getElementById('figs').insertAdjacentHTML('beforeend', fig({
+  kicker:'New-course risk', title:'A brand-new course is not worse. It is wider.',
+  sub:`Every course that debuted inside the window — ${d.nDebut} debut evaluations against ${d.nLater} from later offerings of the same courses.`,
+  hero:'Same middle', heroNote:`median ${d.debut[3]} vs ${d.later[3]} — but the 5th percentile is ${d.debut[0]} vs ${d.later[0]}`,
+  legend:`<span><i style="background:var(--series-2)"></i>Debut offering</span><span><i style="background:var(--series-1)"></i>Later offerings</span>`,
+  svg,
+  take:`The two lines sit on top of each other from the 25th percentile up — a debut course is <b>no worse on average</b> (${d.meanDebut} vs ${d.meanLater}, p&nbsp;=&nbsp;${d.ttest}, not significant). The difference is all in the tails: debuts spread wider at <i>both</i> ends (SD ${d.sdDebut} vs ${d.sdLater}, Levene p&nbsp;=&nbsp;${d.levene}), with a worse floor and a slightly higher ceiling. <b>${d.belowFive[0]}%</b> of debut sections land below 5.0 against ${d.belowFive[1]}% of later ones. So a new course is a wider bet at the same expected value — which is an argument against spending heavily on one, not against taking it.`,
+  table:`<thead><tr><th>Percentile</th><th>Debut</th><th>Later</th><th>Gap</th></tr></thead><tbody>${
+   d.pcts.map((p,i)=>`<tr><td>${p}th</td><td>${d.debut[i].toFixed(2)}</td><td>${d.later[i].toFixed(2)}</td><td>${(d.debut[i]-d.later[i]>0?'+':'')+(d.debut[i]-d.later[i]).toFixed(2)}</td></tr>`).join('')}</tbody>`}));
+ document.querySelectorAll('[data-p]').forEach(r=>{const i=+r.dataset.p;
+  tip(r,`<b>${d.pcts[i]}th percentile</b><br>Debut ${d.debut[i].toFixed(2)}<br>Later ${d.later[i].toFixed(2)}`);});
+})();
+
+/* ---------- 3. recovery ---------- */
+(function(){
+ const it=D.recovery.items, H=32*it.length+52;
+ const lo=2.5,hi=7, xl=250, xw=W-xl-90;
+ const x=v=>xl+(v-lo)/(hi-lo)*xw;
+ let g='';
+ for(let v=3;v<=7;v++) g+=`<line class="gl" x1="${x(v)}" x2="${x(v)}" y1="30" y2="${H-22}"/><text class="tk" x="${x(v)}" y="22" text-anchor="middle">${v}</text>`;
+ const rows=it.map((r,i)=>{const yy=44+i*32;
+  return `<g><text class="tk" x="${xl-12}" y="${yy+4}" text-anchor="end" fill="var(--text-secondary)">${esc(r.title.slice(0,34))}</text>
+   <line x1="${x(r.debut)}" x2="${x(r.later)}" y1="${yy}" y2="${yy}" stroke="var(--grid)" stroke-width="3" stroke-linecap="round"/>
+   <circle cx="${x(r.debut)}" cy="${yy}" r="5.5" fill="var(--series-2)" stroke="var(--surface-1)" stroke-width="2"/>
+   <circle cx="${x(r.later)}" cy="${yy}" r="5.5" fill="var(--series-1)" stroke="var(--surface-1)" stroke-width="2"/>
+   <text class="dl" x="${x(r.later)+12}" y="${yy+4}" fill="var(--success-text)">+${(r.later-r.debut).toFixed(2)}</text>
+   <rect class="hit" data-r="${i}" x="${xl-200}" y="${yy-14}" width="${xw+250}" height="28"/></g>`;}).join('');
+ document.getElementById('figs').insertAdjacentHTML('beforeend', fig({
+  kicker:'Recovery', title:'And when a debut does bomb, it usually gets fixed.',
+  sub:`The ${D.recovery.nBad} courses that debuted below 5.8 and ran at least two more terms. Largest recoveries shown.`,
+  hero:`${D.recovery.pctImproved}%`, heroNote:`of bad debuts improved, by ${D.recovery.meanDelta>0?'+':''}${D.recovery.meanDelta} on average`,
+  legend:`<span><i style="background:var(--series-2)"></i>Debut term</span><span><i style="background:var(--series-1)"></i>Mean of later terms</span>`,
+  svg:`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Debut versus later effectiveness for courses that started badly">${g}${rows}</svg>`,
+  take:`A bad first run is mostly a first-run problem. Of the ${D.recovery.nBad} courses that opened below 5.8, <b>${D.recovery.pctImproved}% improved</b>, by ${D.recovery.meanDelta} points on average. Meanwhile the ${D.recovery.nGood} courses that opened at 6.4 or above <i>fell</i> by ${Math.abs(D.recovery.goodDelta)} — textbook regression to the mean, and a warning against chasing a course purely because its first cohort loved it. The practical read: <b>a course with one terrible year is a better bet than its rating suggests, and a course with one spectacular year is a worse one.</b>`,
+  table:`<thead><tr><th>Course</th><th>Title</th><th>Debut</th><th>Later</th><th>Change</th></tr></thead><tbody>${
+   it.map(r=>`<tr><td>${esc(r.base)}</td><td>${esc(r.title)}</td><td>${r.debut.toFixed(2)}</td><td>${r.later.toFixed(2)}</td><td>+${(r.later-r.debut).toFixed(2)}</td></tr>`).join('')}</tbody>`}));
+ document.querySelectorAll('[data-r]').forEach(el=>{const r=it[+el.dataset.r];
+  tip(el,`<b>${esc(r.base)}</b> ${esc(r.title)}<br>Debut ${r.debut.toFixed(2)} &rarr; later ${r.later.toFixed(2)}<br><span style="color:var(--success-text)">+${(r.later-r.debut).toFixed(2)}</span>`);});
+})();
+
+/* ---------- 4. team size ---------- */
+(function(){
+ const t=D.team, H=250, bw=64, gap=42;
+ const lo=4.8,hi=6.3;
+ const x=i=>PAD.l+40+i*(bw+gap);
+ const y=v=>PAD.t+(hi-v)/(hi-lo)*(H-PAD.t-PAD.b);
+ let g='';
+ for(let v=5;v<=6.25;v+=0.25) g+=`<line class="gl" x1="${PAD.l}" x2="${W-PAD.r}" y1="${y(v)}" y2="${y(v)}"/><text class="tk" x="${PAD.l-8}" y="${y(v)+4}" text-anchor="end">${v.toFixed(2)}</text>`;
+ const bars=t.map((r,i)=>{const bad=r.size===4;
+  return `<g><rect x="${x(i)}" y="${y(r.worth)}" width="${bw}" height="${y(lo)-y(r.worth)}" rx="4"
+    fill="${bad?'var(--critical)':'var(--seq-450)'}"/>
+   <text class="dl" x="${x(i)+bw/2}" y="${y(r.worth)-8}" text-anchor="middle">${r.worth.toFixed(2)}</text>
+   <text class="tk" x="${x(i)+bw/2}" y="${H-PAD.b+16}" text-anchor="middle">${r.size===5?'5+':r.size}</text>
+   <text class="tk" x="${x(i)+bw/2}" y="${H-PAD.b+29}" text-anchor="middle" style="font-size:10px">n=${r.n}</text>
+   <rect class="hit" data-b="${i}" x="${x(i)}" y="${PAD.t}" width="${bw}" height="${H-PAD.t-PAD.b}"/></g>`;}).join('');
+ document.getElementById('figs').insertAdjacentHTML('beforeend', fig({
+  kicker:'Team teaching', title:'Four instructors is the number that breaks a course.',
+  sub:'Mean course worth by how many instructors shared the section. Five-plus is fine; four is not.',
+  hero:'−0.72', heroNote:'course worth for four-instructor sections versus solo-taught',
+  svg:`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Mean course worth by number of instructors">
+   ${g}<line class="ax" x1="${PAD.l}" x2="${W-PAD.r}" y1="${H-PAD.b}" y2="${H-PAD.b}"/>${bars}
+   <text class="tk" x="${PAD.l}" y="${H-2}">instructors on the section</text></svg>`,
+  take:`Solo, two-, three- and five-plus-instructor courses all cluster near 5.9–6.1 on course worth. Four-instructor sections sit at <b>${t[3].worth.toFixed(2)}</b> — three quarters of a point below solo, and the only group that breaks the pattern. It is not one bad course dragging the average: excluding Business AI Foundations entirely, four-instructor sections still average <b>${D.teamExMBA296[3].toFixed(2)}</b>. The plausible story is that four means a rotating panel with no owner, while five-plus means a format deliberately designed around many voices. <b>Treat a four-name instructor list as a warning label.</b> This is observational — n=${t[3].n} and those courses differ in other ways too.`,
+  table:`<thead><tr><th>Instructors</th><th>Course worth</th><th>Effectiveness</th><th>n</th><th>Worth excl. MBA296</th></tr></thead><tbody>${
+   t.map((r,i)=>`<tr><td>${r.size===5?'5+':r.size}</td><td>${r.worth.toFixed(3)}</td><td>${r.eff.toFixed(3)}</td><td>${r.n}</td><td>${D.teamExMBA296[i].toFixed(3)}</td></tr>`).join('')}</tbody>`}));
+ document.querySelectorAll('[data-b]').forEach(el=>{const r=t[+el.dataset.b];
+  tip(el,`<b>${r.size===5?'5 or more':r.size} instructor${r.size>1?'s':''}</b><br>Worth ${r.worth.toFixed(2)}<br>Effectiveness ${r.eff.toFixed(2)}<br><span style="color:var(--v-muted)">${r.n} evaluations</span>`);});
+})();
+
+/* ---------- 5. programs ---------- */
+(function(){
+ const p=D.programs, H=34*p.length+50, xl=76, xw=W-xl-120;
+ const lo=5.7,hi=6.7;
+ const x=v=>xl+(v-lo)/(hi-lo)*xw;
+ let g='';
+ for(let v=5.8;v<=6.6;v+=0.2) g+=`<line class="gl" x1="${x(v)}" x2="${x(v)}" y1="26" y2="${H-20}"/><text class="tk" x="${x(v)}" y="18" text-anchor="middle">${v.toFixed(1)}</text>`;
+ const rows=p.map((r,i)=>{const yy=40+i*34, mba=r.prog==='MBA';
+  return `<g><text class="tk" x="${xl-10}" y="${yy+10}" text-anchor="end" style="font-weight:${mba?700:400};fill:${mba?'var(--text-primary)':'var(--v-muted)'}">${r.prog}</text>
+   <rect x="${xl}" y="${yy}" width="${Math.max(x(r.eff)-xl,2)}" height="15" rx="4" fill="${mba?'var(--series-2)':'var(--seq-450)'}"/>
+   <text class="dl" x="${x(r.eff)+10}" y="${yy+12}">${r.eff.toFixed(2)}</text>
+   <text class="tk" x="${x(r.eff)+52}" y="${yy+12}">n=${r.n}</text>
+   <rect class="hit" data-g="${i}" x="${xl-70}" y="${yy-6}" width="${xw+180}" height="27"/></g>`;}).join('');
+ document.getElementById('figs').insertAdjacentHTML('beforeend', fig({
+  kicker:'Program cultures', title:'The full-time MBA is the toughest crowd at Haas.',
+  sub:'Mean instructor effectiveness by program, all courses, all 16 terms.',
+  hero:'6.06', heroNote:'MBA mean — below EWMBA, UGBA, XMBA and PhD',
+  svg:`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Mean instructor effectiveness by program">${g}${rows}</svg>`,
+  take:`Full-time MBA students rate instructors lower than every program except MFE — <b>0.10 below EWMBA and 0.11 below UGBA</b> on the same instructors teaching similar material. This matters when you read a cross-listed course: 158 of the sections in your dataset pool MBA students with EWMBA or undergrads, so those numbers are inflated relative to a pure-MBA section. But be careful with the causal reading — the same 61 course numbers taught in <i>both</i> MBA and EWMBA show a mean gap of only −0.06 and a median of exactly zero, so most of the program difference is <b>which courses each program offers, not how its students grade</b>.`,
+  table:`<thead><tr><th>Program</th><th>Effectiveness</th><th>Worth</th><th>Difficulty</th><th>n</th></tr></thead><tbody>${
+   p.map(r=>`<tr><td>${r.prog}</td><td>${r.eff.toFixed(3)}</td><td>${r.worth.toFixed(3)}</td><td>${r.diff.toFixed(3)}</td><td>${r.n}</td></tr>`).join('')}</tbody>`}));
+ document.querySelectorAll('[data-g]').forEach(el=>{const r=p[+el.dataset.g];
+  tip(el,`<b>${r.prog}</b><br>Effectiveness ${r.eff.toFixed(2)}<br>Worth ${r.worth.toFixed(2)}<br>Difficulty ${r.diff.toFixed(2)}<br><span style="color:var(--v-muted)">${r.n} evaluations</span>`);});
+})();
+
+/* ---------- 6. instructor scatter ---------- */
+(function(){
+ const ins=D.instructors, H=330;
+ const xlo=4.2,xhi=7.0, ylo=0,yhi=1.8;
+ const x=v=>PAD.l+(v-xlo)/(xhi-xlo)*(W-PAD.l-PAD.r);
+ const y=v=>PAD.t+(1-(v-ylo)/(yhi-ylo))*(H-PAD.t-PAD.b);
+ let g='';
+ for(let v=4.5;v<=7;v+=0.5) g+=`<line class="gl" x1="${x(v)}" x2="${x(v)}" y1="${PAD.t}" y2="${H-PAD.b}"/><text class="tk" x="${x(v)}" y="${H-PAD.b+16}" text-anchor="middle">${v.toFixed(1)}</text>`;
+ for(let v=0;v<=1.5;v+=0.5) g+=`<line class="gl" x1="${PAD.l}" x2="${W-PAD.r}" y1="${y(v)}" y2="${y(v)}"/><text class="tk" x="${PAD.l-8}" y="${y(v)+4}" text-anchor="end">${v.toFixed(1)}</text>`;
+ const OFF={Meyer:[9,4],Levine:[9,4],Cholera:[9,4],Shaye:[-9,17],Davis:[-9,-9]};
+ const pts=ins.map((r,i)=>{const good=r.eff>=6.3&&r.sd<=0.35;
+  return `<circle cx="${x(r.eff)}" cy="${y(r.sd)}" r="${good?5.5:4}" fill="${good?'var(--v-good)':'var(--series-1)'}"
+   fill-opacity="${good?1:.62}" stroke="var(--surface-1)" stroke-width="1.5" data-s="${i}"/>`;}).join('');
+ const mx=ins.reduce((a,r)=>a+r.eff,0)/ins.length, my=ins.reduce((a,r)=>a+r.sd,0)/ins.length;
+ let sxy=0,sxx=0; ins.forEach(r=>{sxy+=(r.eff-mx)*(r.sd-my); sxx+=(r.eff-mx)**2;});
+ const b1=sxy/sxx, b0=my-b1*mx;
+ const fit=`<line x1="${x(4.4)}" y1="${y(b0+b1*4.4)}" x2="${x(6.95)}" y2="${y(b0+b1*6.95)}"
+   stroke="var(--series-2)" stroke-width="2" stroke-dasharray="6 5" opacity=".85"/>`;
+ const labs=ins.map(r=>{const o=OFF[r.ins]; if(!o) return '';
+   return `<text class="dl" x="${x(r.eff)+o[0]}" y="${y(r.sd)+o[1]}" style="font-size:11px" text-anchor="${o[0]<0?'end':'start'}">${esc(r.ins)}</text>`;}).join('');
+ document.getElementById('figs').insertAdjacentHTML('beforeend', fig({
+  kicker:'Instructor reliability', title:'Inconsistency is itself a symptom of weakness.',
+  sub:`Every instructor with 8+ evaluations across 5+ terms (${ins.length} of them). Right is better rated; low is more predictable.`,
+  hero:'−0.70', heroNote:'correlation between an instructor&rsquo;s mean and their variability — strongly negative',
+  svg:`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Instructor mean effectiveness against section-to-section standard deviation">
+   ${g}<line class="ax" x1="${PAD.l}" x2="${W-PAD.r}" y1="${H-PAD.b}" y2="${H-PAD.b}"/>
+   <line class="ax" x1="${PAD.l}" x2="${PAD.l}" y1="${PAD.t}" y2="${H-PAD.b}"/>
+   ${fit}${pts}${labs}
+   <text class="tk" x="${W/2}" y="${H-4}" text-anchor="middle">mean instructor effectiveness &rarr;</text>
+   <text class="tk" x="${PAD.l-38}" y="${PAD.t+56}" transform="rotate(-90 ${PAD.l-38} ${PAD.t+56})" text-anchor="middle">&larr; more consistent (SD)</text></svg>`,
+  take:`The cloud slopes hard: <b>r = −0.70</b> (p &lt; 10⁻²⁸) between mean rating and section-to-section SD. Bottom-quartile instructors vary <b>three times as much</b> as top-quartile ones (SD 0.77 against 0.26). So the two questions are not independent after all — <b>a volatile instructor is usually also a weak one</b>, and high variance is a red flag in its own right rather than merely an inconvenience. The corollary is the useful part: a genuinely strong instructor is a <i>safe</i> pick, not just a good one. Only ${ins.filter(r=>r.eff>=6.5&&r.sd<=0.25).length} of ${ins.length} clear both a 6.5 mean and an SD under 0.25 — Lucas Davis (6.86, SD 0.10), Omri Even-Tov (6.85, SD 0.14) and Jennifer Herbert-Creek (6.70, SD 0.22 across 72 evaluations) among them. Robert Shaye's SD of 0.095 over 32 sections is close to the measurement floor.`,
+  table:`<thead><tr><th>Instructor</th><th>Mean</th><th>SD</th><th>n</th></tr></thead><tbody>${
+   ins.slice().sort((a,b)=>a.sd-b.sd).slice(0,12).map(r=>`<tr><td>${esc(r.ins)}</td><td>${r.eff.toFixed(2)}</td><td>${r.sd.toFixed(3)}</td><td>${r.n}</td></tr>`).join('')}</tbody>`}));
+ document.querySelectorAll('[data-s]').forEach(el=>{const r=ins[+el.dataset.s];
+  tip(el,`<b>${esc(r.ins)}</b><br>Mean ${r.eff.toFixed(2)}<br>SD ${r.sd.toFixed(2)}<br><span style="color:var(--v-muted)">${r.n} evaluations</span>`);});
+})();
+
+document.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{
+  const t=document.getElementById(b.dataset.t); t.classList.toggle('on');
+  b.textContent=t.classList.contains('on')?'Hide the numbers':'Show the numbers';});
+
+};
+</script>
+
+<script>
+(async function boot(){
+ const el = document.getElementById('boot');
+ try{
+  const [ed, id] = await Promise.all([
+    fetch('data/explorer.json').then(r=>{ if(!r.ok) throw new Error('explorer.json '+r.status); return r.json(); }),
+    fetch('data/insights.json').then(r=>{ if(!r.ok) throw new Error('insights.json '+r.status); return r.json(); })
+  ]);
+  window.__INSIGHTS = id;
+  window.__initExplorer(ed);
+  el.style.display='none';
+  document.getElementById('app').style.display='';
+
+  const F=document.getElementById('tab-find'), Dv=document.getElementById('tab-data');
+  const bf=document.getElementById('tb-find'), bd=document.getElementById('tb-data');
+  let built=false;
+  function go(find){
+    const tt=document.getElementById('tt'); if(tt) tt.style.opacity=0;
+    F.hidden=!find; Dv.hidden=find;
+    bf.classList.toggle('on',find); bd.classList.toggle('on',!find);
+    bf.setAttribute('aria-selected',find); bd.setAttribute('aria-selected',!find);
+    if(!find && !built){ built=true; window.__buildInsights(); }
+    window.scrollTo({top:0,behavior:'instant'});
+  }
+  bf.onclick=()=>go(true); bd.onclick=()=>go(false);
+  const nf=document.getElementById('nfind'), cnt=document.getElementById('count');
+  const sync=()=>{ nf.textContent = cnt ? cnt.textContent.replace(' shown','') : ''; };
+  if(cnt){ sync(); new MutationObserver(sync).observe(cnt,{childList:true,characterData:true,subtree:true}); }
+  document.querySelectorAll('.mlink').forEach(a=>a.addEventListener('click',()=>{
+    const m=document.getElementById('method'); if(m) setTimeout(()=>m.scrollIntoView({behavior:'smooth'}),0);}));
+ }catch(e){
+  el.className='err';
+  el.textContent='Could not load the data files ('+e.message+'). '
+   +'This page must be served over http(s) — opening index.html directly from disk will not work.';
+ }
+})();
+</script>
+</body></html>
