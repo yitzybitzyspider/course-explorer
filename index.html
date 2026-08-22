@@ -216,6 +216,13 @@ table.t td.best .mono,table.t td.best b{color:var(--chipCt)}
 .verdict{background:var(--wash);border-left:2px solid var(--blue);padding:14px 16px;margin:16px 0;
  font-size:14.5px;line-height:1.6;color:var(--ink2)}
 .verdict b{color:var(--ink)}
+.intro{background:var(--wash);border-left:2px solid var(--blue);padding:16px 18px;margin:14px 0 0;
+ font-size:14.5px;line-height:1.6;color:var(--ink2);max-width:78ch}
+.intro b{color:var(--ink)}
+.intro ol{margin:8px 0 12px;padding-left:20px}
+.intro li{margin:4px 0}
+.detail a{color:var(--blue);text-decoration:none}
+.detail a:hover{text-decoration:underline}
 .method{margin-top:40px;border-top:1px solid var(--rule);padding:34px 0 90px;
  color:var(--ink2);font-size:14.5px;line-height:1.7}
 .method h4{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;
@@ -356,6 +363,22 @@ svg{display:block;width:100%;height:auto;overflow:visible}
     compare to see it. The axis refits to whatever your filters leave on screen, and the orange line is that set's
     median. Older evidence counts for less — a two-year half-life. Every term's comments are published,
     expandable under each course.</p>
+   <div class="intro" id="intro" hidden>
+    <b>How to read this, in 60 seconds.</b>
+    <ol>
+     <li>Every score is adjusted for sample size — a 7.00 from three students gets pulled toward the
+      average, so tiny sections cannot top the list on luck.</li>
+     <li>The bar behind each score is a <b>90% confidence interval</b> on one shared axis. Where two
+      bars overlap, those courses are <b>tied</b> — decide on workload, schedule and topic, not rank.</li>
+     <li>The orange line is the median of whatever your filters currently show.</li>
+     <li>Click a row to open it: the instructors' own catalog description, who it's for, red flags,
+      and every term's student comments.</li>
+     <li>Pin (+) a few courses and hit <b>Compare</b> for a side-by-side verdict.</li>
+     <li>Badges warn you: thin evidence, low response rate, last taught years ago, never evaluated.
+      The link in your address bar always reproduces exactly what you see — paste it to a classmate.</li>
+    </ol>
+    <button class="btn" id="introok">Got it</button>
+   </div>
    <div class="ctrl">
     <div class="row r1">
      <input type="search" id="q" placeholder="Search course, title, instructor, or what students wrote…">
@@ -374,6 +397,8 @@ svg{display:block;width:100%;height:auto;overflow:visible}
      <button class="btn" id="dir">↓ high to low</button>
      <button class="btn fbtn" id="fbtn" aria-expanded="false">Filters</button>
      <button class="btn" id="reset">Reset</button>
+     <button class="btn" id="share">Copy link</button>
+     <button class="btn" id="guide">How to read this</button>
     </div>
     <div class="row" id="areas"></div>
     <div class="row">
@@ -454,6 +479,27 @@ document.getElementById('thm').onclick=()=>{
  setTheme(o[(o.indexOf(c)+1)%3]);};
 setTheme((()=>{try{return localStorage.getItem('ce-theme')||'auto'}catch(e){return 'auto'}})());
 document.addEventListener('keydown',e=>{if(e.key==='Escape')document.getElementById('modal').classList.remove('on')});
+
+/* shareable URLs: the hash always reproduces the current view */
+function saveHash(){
+ const st={q:$('#q').value, s:$('#sort').value, d:asc?1:0, a:[...sel], f:$('#fmt').value,
+  y:$('#day').value, i:$('#inst').value, n:+$('#nmin').value,
+  d1:+$('#dmin').value, d2:+$('#dmax').value, u1:+$('#umin').value, u2:+$('#umax').value,
+  t:Object.keys(togs).filter(k=>togs[k]), p:pins};
+ try{history.replaceState(null,'','#'+encodeURIComponent(JSON.stringify(st)));}catch(e){}}
+function restoreState(){
+ let st=null; try{st=JSON.parse(decodeURIComponent(location.hash.slice(1)));}catch(e){}
+ if(!st||typeof st!=='object')return;
+ $('#q').value=st.q||''; if(st.s)$('#sort').value=st.s;
+ asc=!!st.d; $('#dir').textContent=asc?'↑ low to high':'↓ high to low';
+ sel.clear(); (st.a||[]).forEach(a=>sel.add(a));
+ document.querySelectorAll('[data-a]').forEach(c=>c.classList.toggle('on',sel.has(c.dataset.a)));
+ if(st.f!=null)$('#fmt').value=st.f; if(st.y!=null)$('#day').value=st.y; if(st.i!=null)$('#inst').value=st.i;
+ [['nmin',st.n],['dmin',st.d1],['dmax',st.d2],['umin',st.u1],['umax',st.u2]].forEach(([id,v])=>{
+  if(v!=null){$('#'+id).value=v;$('#'+id+'v').textContent=v;}});
+ if(Array.isArray(st.t)){Object.keys(togs).forEach(k=>togs[k]=st.t.includes(k));
+  document.querySelectorAll('[data-t]').forEach(c=>c.classList.toggle('on',!!togs[c.dataset.t]));}
+ if(Array.isArray(st.p))pins=st.p.filter(id=>find(id));}
 const AREAS=["AI", "Ops & Analytics", "Energy, Climate & Infrastructure", "Tech Commercialization", "Entrepreneurship", "Finance & Investing", "Healthcare & Biotech", "Marketing", "Leadership & People", "Social Impact"];
 
 function tipEl(el,html){
@@ -534,7 +580,7 @@ function detail(r){
    ${r.prior.effSD!=null?`Section-to-section SD ${r.prior.effSD.toFixed(2)}${r.prior.effSD>0.9?' — <b>highly variable</b>':''}.`:''}</div></div>`:'';
  if(r.noHistory) return `<div class="detail">${r.ghostNote?`<div class="f" style="margin-bottom:14px"><div class="k">What this is</div><div class="v">${esc(r.ghostNote)}</div></div>`:''}${r.desc?`<div class="f" style="margin-bottom:14px"><div class="k">Berkeley catalog</div><div class="v">${esc(r.desc)}</div></div>`:''}<div class="grid">${prior||
    '<div class="f"><div class="v">No record for this instructor anywhere in five years.</div></div>'}
-   <div class="f"><div class="k">Fall 2026</div><div class="v">${esc(r.f26Sections)} · ${r.f26Units?r.f26Units+' units · ':''}${esc(r.f26Format)}${r.f26Day?' · '+esc(r.f26Day)+' '+esc(r.f26Time):''}</div></div></div>
+   <div class="f"><div class="k">Fall 2026</div><div class="v">${esc(r.f26Sections)} · ${r.f26Units?r.f26Units+' units · ':''}${esc(r.f26Format)}${r.f26Day?' · '+esc(r.f26Day)+' '+esc(r.f26Time):''}${r.f26Dates?' · '+esc(r.f26Dates):''} · <a href="https://classes.berkeley.edu/search/class/${encodeURIComponent(r.course.replace(/^MBA/,'MBA ').split('.')[0])}" target="_blank" rel="noopener">official listing ↗</a></div></div></div>
    <div class="flag"><b>Never evaluated.</b> New or renamed for Fall 2026 — everything above describes the
    instructor on other courses. A real signal, but a weak one.</div></div>`;
  const rows=r.sections.map(s=>{
@@ -552,6 +598,7 @@ function detail(r){
     ${cs.map((c,i)=>`<div class="c${c.indexOf('[REDACTED')===0?' red':''}"><span class="i">${i+1}</span>${esc(c)}</div>`).join('')}
     </div></td></tr>`:''}`;}).join('');
  return `<div class="detail">${r.desc?`<div class="f" style="margin-bottom:14px"><div class="k">Berkeley catalog — the instructors' own description</div><div class="v">${esc(r.desc)}</div></div>`:''}<div class="grid">
+   ${r.f26?`<div class="f"><div class="k">Fall 2026 schedule</div><div class="v"><span class="mono" style="font-size:12px">${esc(r.f26Sections)}${r.f26Units?` · ${r.f26Units}u`:''}${r.f26Day?` · ${esc(r.f26Day)} ${esc(r.f26Time)}`:''}<br>${esc(r.f26Format)}${r.f26Dates?` · ${esc(r.f26Dates)}`:''}</span> · <a href="https://classes.berkeley.edu/search/class/${encodeURIComponent(r.course.replace(/^MBA/,'MBA ').split('.')[0])}" target="_blank" rel="noopener">official listing ↗</a></div></div>`:''}
    <div class="f"><div class="k">Who it's for</div><div class="v">${esc(last.goodFor)||'—'}</div></div>
    <div class="f"><div class="k">Who it isn't for</div><div class="v">${esc(last.notFor)||'—'}</div></div>
    <div class="f"><div class="k">Workload</div><div class="v">${r.hours!=null?`<b>${r.hours}</b> hrs/week outside class, self-reported`:(esc(last.workloadNote)||'not measured')}</div></div>
@@ -632,7 +679,7 @@ function render(){
  document.querySelectorAll('tr.trow.can').forEach(tr=>tr.onclick=e=>{e.stopPropagation();
    const row=document.getElementById(tr.dataset.tid); if(!row)return;
    row.classList.toggle('on'); tr.classList.toggle('open');});
- tray();}
+ tray(); saveHash();}
 
 const find=id=>DATA.rows.find(r=>(r.rid||r.course+'|'+r.instructor)===id);
 function tray(){
@@ -734,6 +781,13 @@ function initChoose(){
    ${row("Who it isn't",r=>esc((r.sections[r.sections.length-1]||{}).notFor))}
    </tbody></table>`;
   $('#modal').classList.add('on');};
+ $('#share').onclick=()=>{navigator.clipboard.writeText(location.href).then(()=>{
+   $('#share').textContent='Copied ✓';setTimeout(()=>$('#share').textContent='Copy link',1400);},()=>{});};
+ let seen='1'; try{seen=localStorage.getItem('ce-guide')}catch(e){}
+ if(!seen)$('#intro').hidden=false;
+ $('#guide').onclick=()=>{$('#intro').hidden=!$('#intro').hidden;};
+ $('#introok').onclick=()=>{$('#intro').hidden=true;try{localStorage.setItem('ce-guide','1')}catch(e){}};
+ restoreState();
  render();}
 
 /* ---- tabs ---- */
