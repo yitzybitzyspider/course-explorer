@@ -454,7 +454,7 @@ document.getElementById('thm').onclick=()=>{
  setTheme(o[(o.indexOf(c)+1)%3]);};
 setTheme((()=>{try{return localStorage.getItem('ce-theme')||'auto'}catch(e){return 'auto'}})());
 document.addEventListener('keydown',e=>{if(e.key==='Escape')document.getElementById('modal').classList.remove('on')});
-const AREAS=["AI","Ops & Analytics","Energy, Climate & Infrastructure","Tech Commercialization","Entrepreneurship"];
+const AREAS=["AI", "Ops & Analytics", "Energy, Climate & Infrastructure", "Tech Commercialization", "Entrepreneurship", "Finance & Investing", "Healthcare & Biotech", "Marketing", "Leadership & People", "Social Impact"];
 
 function tipEl(el,html){
   el.addEventListener('mousemove',e=>{TT.innerHTML=html;TT.style.opacity=1;
@@ -532,7 +532,7 @@ function detail(r){
    <div class="v"><b>${r.prior.eff.toFixed(2)}</b> across ${r.prior.obs} sections, ${r.prior.nCourses} courses,
    ${r.prior.terms} terms — the <b>${r.prior.pctile}th percentile</b> of Haas faculty.
    ${r.prior.effSD!=null?`Section-to-section SD ${r.prior.effSD.toFixed(2)}${r.prior.effSD>0.9?' — <b>highly variable</b>':''}.`:''}</div></div>`:'';
- if(r.noHistory) return `<div class="detail">${r.ghostNote?`<div class="f" style="margin-bottom:14px"><div class="k">What this is</div><div class="v">${esc(r.ghostNote)}</div></div>`:''}<div class="grid">${prior||
+ if(r.noHistory) return `<div class="detail">${r.ghostNote?`<div class="f" style="margin-bottom:14px"><div class="k">What this is</div><div class="v">${esc(r.ghostNote)}</div></div>`:''}${r.desc?`<div class="f" style="margin-bottom:14px"><div class="k">Berkeley catalog</div><div class="v">${esc(r.desc)}</div></div>`:''}<div class="grid">${prior||
    '<div class="f"><div class="v">No record for this instructor anywhere in five years.</div></div>'}
    <div class="f"><div class="k">Fall 2026</div><div class="v">${esc(r.f26Sections)} · ${r.f26Units?r.f26Units+' units · ':''}${esc(r.f26Format)}${r.f26Day?' · '+esc(r.f26Day)+' '+esc(r.f26Time):''}</div></div></div>
    <div class="flag"><b>Never evaluated.</b> New or renamed for Fall 2026 — everything above describes the
@@ -551,7 +551,7 @@ function detail(r){
       el.parentElement.querySelectorAll('.c').forEach(d=>{d.style.display=(!q||d.textContent.toLowerCase().indexOf(q)>=0)?'':'none';});})(this)">
     ${cs.map((c,i)=>`<div class="c${c.indexOf('[REDACTED')===0?' red':''}"><span class="i">${i+1}</span>${esc(c)}</div>`).join('')}
     </div></td></tr>`:''}`;}).join('');
- return `<div class="detail"><div class="grid">
+ return `<div class="detail">${r.desc?`<div class="f" style="margin-bottom:14px"><div class="k">Berkeley catalog — the instructors' own description</div><div class="v">${esc(r.desc)}</div></div>`:''}<div class="grid">
    <div class="f"><div class="k">Who it's for</div><div class="v">${esc(last.goodFor)||'—'}</div></div>
    <div class="f"><div class="k">Who it isn't for</div><div class="v">${esc(last.notFor)||'—'}</div></div>
    <div class="f"><div class="k">Workload</div><div class="v">${r.hours!=null?`<b>${r.hours}</b> hrs/week outside class, self-reported`:(esc(last.workloadNote)||'not measured')}</div></div>
@@ -584,8 +584,8 @@ function render(){
   if(fmt&&!has(r.f26Format,fmt))return false;
   if(day&&!has(r.f26Day,day))return false;
   if(inst&&r.instructor!==inst)return false;
-  if(q){const hay=(r.course+' '+r.title+' '+r.instructor+' '+r.sections.map(s=>s.goodFor+' '+s.notFor+' '+s.redFlags+' '+s.workloadNote+' '+(s.comments||[]).join(' ')).join(' ')).toLowerCase();
-   if(!hay.includes(q))return false;}
+  if(q){const hay=(r.course+' '+r.title+' '+r.instructor+' '+(r.desc||'')+' '+(r.ghostNote||'')+' '+r.sections.map(s=>s.goodFor+' '+s.notFor+' '+s.redFlags+' '+s.workloadNote+' '+(s.comments||[]).join(' ')).join(' ')).toLowerCase();
+   if(!q.split(/\s+/).every(t=>hay.includes(t)))return false;}
   return true;});
  rows.sort((a,b)=>{let x=(key==='priorPct'?((a.prior||{}).pctile??null):a[key]),
    y=(key==='priorPct'?((b.prior||{}).pctile??null):b[key]);
