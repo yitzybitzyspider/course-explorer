@@ -65,6 +65,10 @@ section[hidden]{display:none}
  border-bottom:1px solid var(--rule);padding:13px 0 11px;margin:20px 0 0}
 .row{display:flex;gap:9px;flex-wrap:wrap;align-items:center}
 .row+.row{margin-top:8px}
+.lr{align-items:flex-start;flex-wrap:nowrap}
+.rl{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;
+ color:var(--muted);padding:10px 0;min-width:46px;flex:none}
+.chips{display:flex;gap:9px;flex-wrap:wrap;align-items:center;flex:1}
 input[type=search],select{font:inherit;font-size:14px;padding:8px 11px;border:1px solid var(--rule);
  background:var(--panel);color:var(--ink);border-radius:2px}
 input[type=search]{flex:1;min-width:190px}
@@ -216,11 +220,6 @@ table.t td.best .mono,table.t td.best b{color:var(--chipCt)}
 .verdict{background:var(--wash);border-left:2px solid var(--blue);padding:14px 16px;margin:16px 0;
  font-size:14.5px;line-height:1.6;color:var(--ink2)}
 .verdict b{color:var(--ink)}
-.intro{background:var(--wash);border-left:2px solid var(--blue);padding:16px 18px;margin:14px 0 0;
- font-size:14.5px;line-height:1.6;color:var(--ink2);max-width:78ch}
-.intro b{color:var(--ink)}
-.intro ol{margin:8px 0 12px;padding-left:20px}
-.intro li{margin:4px 0}
 .detail a{color:var(--blue);text-decoration:none}
 .detail a:hover{text-decoration:underline}
 .method{margin-top:40px;border-top:1px solid var(--rule);padding:34px 0 90px;
@@ -357,28 +356,9 @@ svg{display:block;width:100%;height:auto;overflow:visible}
  <div id="boot">Loading course data…</div>
  <div id="app" style="display:none">
   <section id="tab-choose" role="tabpanel">
-   <p class="lede">Every MBA elective evaluated since Spring 2021, and the Fall 2026 courses that have never been
-    evaluated. Each score carries a <b>90% confidence interval</b> — drawn as a bar on a wide screen, printed as a
-    range on a narrow one. Where two intervals overlap, the ranking between those courses is not real; pin them and
-    compare to see it. The axis refits to whatever your filters leave on screen, and the orange line is that set's
-    median. Older evidence counts for less — a two-year half-life. Every term's comments are published,
-    expandable under each course.</p>
-   <div class="intro" id="intro" hidden>
-    <b>How to read this, in 60 seconds.</b>
-    <ol>
-     <li>Every score is adjusted for sample size — a 7.00 from three students gets pulled toward the
-      average, so tiny sections cannot top the list on luck.</li>
-     <li>The bar behind each score is a <b>90% confidence interval</b> on one shared axis. Where two
-      bars overlap, those courses are <b>tied</b> — decide on workload, schedule and topic, not rank.</li>
-     <li>The orange line is the median of whatever your filters currently show.</li>
-     <li>Click a row to open it: the instructors' own catalog description, who it's for, red flags,
-      and every term's student comments.</li>
-     <li>Pin (+) a few courses and hit <b>Compare</b> for a side-by-side verdict.</li>
-     <li>Badges warn you: thin evidence, low response rate, last taught years ago, never evaluated.
-      The link in your address bar always reproduces exactly what you see — paste it to a classmate.</li>
-    </ol>
-    <button class="btn" id="introok">Got it</button>
-   </div>
+   <p class="lede">Every MBA elective evaluated since Spring 2021, plus the Fall 2026 courses with no history yet.
+    Each score carries a <b>90% confidence interval</b> — where two bars overlap, those courses are tied; pin them
+    and compare. Click any course for the catalog description, red flags, and every term's student comments.</p>
    <div class="ctrl">
     <div class="row r1">
      <input type="search" id="q" placeholder="Search course, title, instructor, or what students wrote…">
@@ -398,10 +378,9 @@ svg{display:block;width:100%;height:auto;overflow:visible}
      <button class="btn fbtn" id="fbtn" aria-expanded="false">Filters</button>
      <button class="btn" id="reset">Reset</button>
      <button class="btn" id="share">Copy link</button>
-     <button class="btn" id="guide">How to read this</button>
     </div>
-    <div class="row" id="areas"></div>
-    <div class="row">
+    <div class="row lr"><span class="rl">topic</span><div class="chips" id="areas"></div></div>
+    <div class="row lr"><span class="rl">refine</span><div class="chips">
      <select id="fmt"><option value="">Any format</option></select>
      <select id="day"><option value="">Any day</option></select>
      <select id="inst"><option value="">Any instructor</option></select>
@@ -410,8 +389,8 @@ svg{display:block;width:100%;height:auto;overflow:visible}
       – <input type="range" id="dmax" min="0" max="7" step="0.5" value="7"><b id="dmaxv">7</b></div>
      <div class="sl">units <input type="range" id="umin" min="0" max="4" value="0"><b id="uminv">0</b>
       – <input type="range" id="umax" min="0" max="4" value="4"><b id="umaxv">4</b></div>
-    </div>
-    <div class="row" id="togs"></div>
+    </div></div>
+    <div class="row lr"><span class="rl">show</span><div class="chips" id="togs"></div></div>
    </div>
    <div class="tally" id="count"></div>
    <div class="axhd" id="axhd"><div></div><div></div>
@@ -783,10 +762,6 @@ function initChoose(){
   $('#modal').classList.add('on');};
  $('#share').onclick=()=>{navigator.clipboard.writeText(location.href).then(()=>{
    $('#share').textContent='Copied ✓';setTimeout(()=>$('#share').textContent='Copy link',1400);},()=>{});};
- let seen='1'; try{seen=localStorage.getItem('ce-guide')}catch(e){}
- if(!seen)$('#intro').hidden=false;
- $('#guide').onclick=()=>{$('#intro').hidden=!$('#intro').hidden;};
- $('#introok').onclick=()=>{$('#intro').hidden=true;try{localStorage.setItem('ce-guide','1')}catch(e){}};
  restoreState();
  render();}
 
